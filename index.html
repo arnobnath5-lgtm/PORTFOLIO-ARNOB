@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arnob Nath — ECE Student & Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy:    #0A0F1E;
+    --navy2:   #0E1528;
+    --blue:    #2D6FFF;
+    --blue2:   #1a5aee;
+    --cyan:    #00D4FF;
+    --white:   #F8FAFF;
+    --muted:   #8899BB;
+    --glass:   rgba(255,255,255,0.055);
+    --glass-b: rgba(255,255,255,0.10);
+    --border:  rgba(45,111,255,0.18);
+    --grad:    linear-gradient(135deg, #0A0F1E 0%, #0d1630 50%, #091220 100%);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ───────────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 6vw;
+    height: 64px;
+    background: rgba(10,15,30,0.75);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    transition: background .3s;
+  }
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1.2rem;
+    color: var(--cyan);
+    letter-spacing: .04em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); font-size: .88rem; font-weight: 500;
+    text-decoration: none; letter-spacing: .03em;
+    transition: color .25s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-cta {
+    background: var(--blue); color: #fff; border: none; cursor: pointer;
+    padding: .45rem 1.2rem; border-radius: 6px;
+    font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 600;
+    transition: background .25s, transform .2s;
+  }
+  .nav-cta:hover { background: var(--blue2); transform: translateY(-1px); }
+
+  /* ─── HAMBURGER ─────────────────────────────────────── */
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--muted); border-radius: 2px; transition: .3s; }
+  .mobile-menu { display: none; }
+
+  /* ─── HERO ───────────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    background: var(--grad);
+    padding: 80px 6vw 0;
+  }
+
+  /* Stars canvas */
+  #stars-canvas {
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Horizon glow */
+  .horizon-glow {
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 38%;
+    background: radial-gradient(ellipse 80% 60% at 50% 120%, rgba(0,212,255,.15) 0%, rgba(45,111,255,.08) 45%, transparent 75%);
+    z-index: 1; pointer-events: none;
+  }
+
+  /* Running figure SVG */
+  .runner-scene {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 220px;
+    z-index: 2; pointer-events: none;
+    overflow: hidden;
+  }
+  .runner-ground {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,.3) 40%, rgba(45,111,255,.5) 60%, transparent);
+  }
+  .runner-figure {
+    position: absolute;
+    bottom: 2px;
+    animation: runAcross 7s linear infinite;
+  }
+  @keyframes runAcross {
+    0%   { left: -80px; opacity: 0; }
+    5%   { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { left: 110%; opacity: 0; }
+  }
+  .runner-figure svg { filter: drop-shadow(0 0 8px rgba(0,212,255,.6)); }
+
+  /* Leg animation */
+  .leg-front { transform-origin: 50px 75px; animation: legF 0.4s ease-in-out infinite alternate; }
+  .leg-back  { transform-origin: 50px 75px; animation: legB 0.4s ease-in-out infinite alternate; }
+  .arm-front { transform-origin: 50px 55px; animation: armF 0.4s ease-in-out infinite alternate; }
+  .arm-back  { transform-origin: 50px 55px; animation: armB 0.4s ease-in-out infinite alternate; }
+  .torso     { animation: bounce 0.4s ease-in-out infinite alternate; }
+  @keyframes legF  { from { transform: rotate(-25deg); } to { transform: rotate(25deg); } }
+  @keyframes legB  { from { transform: rotate(25deg);  } to { transform: rotate(-25deg); } }
+  @keyframes armF  { from { transform: rotate(20deg);  } to { transform: rotate(-20deg); } }
+  @keyframes armB  { from { transform: rotate(-20deg); } to { transform: rotate(20deg);  } }
+  @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+
+  /* Hero content */
+  .hero-content {
+    position: relative; z-index: 5;
+    display: flex; align-items: center; gap: 6vw;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+  }
+  .hero-text { flex: 1; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(0,212,255,.1); border: 1px solid rgba(0,212,255,.25);
+    color: var(--cyan); font-size: .8rem; font-weight: 600; letter-spacing: .08em;
+    padding: .3rem .9rem; border-radius: 20px; margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+  .hero-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-weight: 700; line-height: 1.1;
+    letter-spacing: -.02em;
+    background: linear-gradient(135deg, #F8FAFF 30%, var(--cyan) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero-role {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(.95rem, 2vw, 1.15rem);
+    color: var(--muted); font-weight: 400; margin: .6rem 0 1rem;
+    letter-spacing: .01em;
+  }
+  .hero-role span { color: var(--blue); font-weight: 600; }
+  .hero-quote {
+    font-size: clamp(.9rem, 1.5vw, 1.05rem);
+    color: rgba(248,250,255,.65);
+    font-style: italic; max-width: 480px;
+    margin-bottom: 2.2rem;
+    border-left: 3px solid var(--cyan); padding-left: 1rem;
+  }
+
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--blue); color: #fff; text-decoration: none;
+    padding: .7rem 1.6rem; border-radius: 8px;
+    font-weight: 600; font-size: .92rem;
+    transition: background .25s, transform .2s, box-shadow .25s;
+    box-shadow: 0 4px 20px rgba(45,111,255,.35);
+  }
+  .btn-primary:hover { background: var(--blue2); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(45,111,255,.5); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--glass); color: var(--white); text-decoration: none;
+    border: 1px solid var(--border); padding: .7rem 1.6rem; border-radius: 8px;
+    font-weight: 600; font-size: .92rem;
+    backdrop-filter: blur(10px);
+    transition: background .25s, border-color .25s, transform .2s;
+  }
+  .btn-secondary:hover { background: var(--glass-b); border-color: var(--cyan); transform: translateY(-2px); }
+
+  /* Profile image */
+  .hero-image {
+    flex-shrink: 0;
+    width: clamp(200px, 22vw, 300px);
+    height: clamp(200px, 22vw, 300px);
+    position: relative;
+  }
+  .hero-image::before {
+    content: ''; position: absolute; inset: -3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    animation: rotateBorder 4s linear infinite;
+  }
+  @keyframes rotateBorder { to { transform: rotate(360deg); } }
+  .hero-image::after {
+    content: ''; position: absolute; inset: 0;
+    border-radius: 50%;
+    background: var(--navy2);
+    z-index: 0;
+  }
+  .profile-circle {
+    position: absolute; inset: 3px; z-index: 1;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #1a2540, #0d1628);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    overflow: hidden;
+    border: 2px solid rgba(45,111,255,.2);
+  }
+  .profile-initials {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 700; color: var(--cyan); line-height: 1;
+  }
+  .profile-circle .profile-sub {
+    font-size: .7rem; color: var(--muted); letter-spacing: .05em; margin-top: .2rem;
+  }
+
+  /* ─── SECTIONS COMMON ─────────────────────────────────── */
+  section { padding: 100px 6vw; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .78rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: .7rem;
+  }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700; line-height: 1.15; letter-spacing: -.02em;
+    margin-bottom: 1rem;
+  }
+  .section-lead {
+    color: var(--muted); font-size: 1rem; max-width: 560px;
+    line-height: 1.75; margin-bottom: 3.5rem;
+  }
+
+  /* scroll reveal */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── ABOUT ─────────────────────────────────────────── */
+  #about { background: var(--navy2); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;
+  }
+  .about-text p {
+    color: rgba(248,250,255,.75); line-height: 1.85; margin-bottom: 1.1rem; font-size: .97rem;
+  }
+  .about-text p strong { color: var(--cyan); font-weight: 600; }
+  .stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  }
+  .stat-card {
+    background: var(--glass); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.3rem 1.2rem;
+    backdrop-filter: blur(12px);
+    transition: border-color .3s, transform .3s;
+  }
+  .stat-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+  .stat-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem; font-weight: 700; color: var(--cyan); line-height: 1;
+  }
+  .stat-label { font-size: .8rem; color: var(--muted); margin-top: .3rem; }
+
+  /* ─── EDUCATION ─────────────────────────────────────── */
+  #education { background: var(--navy); }
+  .edu-timeline { position: relative; padding-left: 2rem; }
+  .edu-timeline::before {
+    content: ''; position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px;
+    background: linear-gradient(180deg, var(--cyan), var(--blue), transparent);
+  }
+  .edu-item {
+    position: relative; margin-bottom: 2.5rem;
+    background: var(--glass); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.6rem 1.8rem;
+    backdrop-filter: blur(12px);
+    transition: border-color .3s, transform .3s;
+  }
+  .edu-item:hover { border-color: var(--cyan); transform: translateX(4px); }
+  .edu-item::before {
+    content: ''; position: absolute; left: -2.5rem; top: 1.8rem;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--cyan); border: 2px solid var(--navy);
+    box-shadow: 0 0 10px rgba(0,212,255,.5);
+  }
+  .edu-degree {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: .4rem;
+  }
+  .edu-school { font-size: .93rem; color: var(--cyan); font-weight: 600; margin-bottom: .3rem; }
+  .edu-detail { font-size: .85rem; color: var(--muted); }
+  .edu-year {
+    display: inline-block; margin-top: .6rem;
+    background: rgba(45,111,255,.15); border: 1px solid rgba(45,111,255,.25);
+    color: var(--blue); font-size: .78rem; font-weight: 600; letter-spacing: .05em;
+    padding: .2rem .7rem; border-radius: 20px;
+  }
+
+  /* ─── SKILLS ────────────────────────────────────────── */
+  #skills { background: var(--navy2); }
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .skill-category {
+    background: var(--glass); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    backdrop-filter: blur(12px);
+    transition: border-color .3s;
+  }
+  .skill-category:hover { border-color: rgba(0,212,255,.35); }
+  .skill-cat-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem; font-weight: 700; color: var(--cyan);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .skill-cat-title .icon { font-size: 1.2rem; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: .55rem; }
+  .skill-tag {
+    background: rgba(45,111,255,.12); border: 1px solid rgba(45,111,255,.22);
+    color: rgba(248,250,255,.85); font-size: .82rem; font-weight: 500;
+    padding: .35rem .85rem; border-radius: 20px;
+    transition: background .25s, border-color .25s, color .25s;
+  }
+  .skill-tag:hover {
+    background: rgba(0,212,255,.18); border-color: var(--cyan); color: var(--white);
+  }
+
+  /* ─── PORTFOLIO ─────────────────────────────────────── */
+  #portfolio { background: var(--navy); }
+  .portfolio-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  }
+  .port-card {
+    background: var(--glass); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    transition: transform .35s, border-color .3s, box-shadow .35s;
+    cursor: pointer;
+  }
+  .port-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0,212,255,.4);
+    box-shadow: 0 16px 48px rgba(0,0,0,.35);
+  }
+  .port-thumb {
+    height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.8rem;
+    position: relative; overflow: hidden;
+  }
+  .port-thumb::before {
+    content: ''; position: absolute; inset: 0;
+    opacity: .55;
+  }
+  .port-thumb .port-icon { position: relative; z-index: 1; }
+  .port-body { padding: 1.2rem 1.3rem 1.5rem; }
+  .port-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: .98rem; font-weight: 700; margin-bottom: .35rem;
+  }
+  .port-desc { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+  .port-tag {
+    display: inline-block; margin-top: .7rem;
+    background: rgba(45,111,255,.14); border: 1px solid rgba(45,111,255,.22);
+    color: var(--blue); font-size: .72rem; font-weight: 600;
+    padding: .18rem .65rem; border-radius: 20px;
+  }
+
+  /* thumb gradients */
+  .t1 .port-thumb::before { background: linear-gradient(135deg, #1a3a6e, #2563eb); }
+  .t2 .port-thumb::before { background: linear-gradient(135deg, #1a4a3a, #059669); }
+  .t3 .port-thumb::before { background: linear-gradient(135deg, #3a1a4a, #7c3aed); }
+  .t4 .port-thumb::before { background: linear-gradient(135deg, #4a2a1a, #d97706); }
+  .t5 .port-thumb::before { background: linear-gradient(135deg, #1a3a3a, #0891b2); }
+  .t6 .port-thumb::before { background: linear-gradient(135deg, #3a1a2a, #db2777); }
+
+  /* ─── CAREER OBJECTIVE ───────────────────────────────── */
+  #objective {
+    background: var(--navy2);
+  }
+  .objective-card {
+    background: linear-gradient(135deg, rgba(45,111,255,.08) 0%, rgba(0,212,255,.05) 100%);
+    border: 1px solid rgba(0,212,255,.2);
+    border-radius: 20px; padding: 3.5rem;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    position: relative; overflow: hidden;
+  }
+  .objective-card::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,255,.06), transparent 70%);
+  }
+  .objective-card::after {
+    content: ''; position: absolute; bottom: -60px; left: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,111,255,.06), transparent 70%);
+  }
+  .obj-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .objective-text {
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    color: rgba(248,250,255,.8); line-height: 1.8; max-width: 680px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+
+  /* ─── CONTACT ───────────────────────────────────────── */
+  #contact { background: var(--navy); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: start; }
+  .contact-info h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem;
+  }
+  .contact-item {
+    display: flex; align-items: center; gap: .9rem;
+    margin-bottom: 1rem; color: rgba(248,250,255,.75);
+    font-size: .93rem;
+  }
+  .contact-item a { color: var(--cyan); text-decoration: none; transition: opacity .2s; }
+  .contact-item a:hover { opacity: .75; }
+  .contact-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(45,111,255,.15); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .social-row { display: flex; gap: .8rem; margin-top: 1.8rem; }
+  .social-btn {
+    display: flex; align-items: center; gap: .5rem;
+    background: var(--glass); border: 1px solid var(--border);
+    color: var(--white); text-decoration: none;
+    padding: .55rem 1.1rem; border-radius: 8px;
+    font-size: .83rem; font-weight: 600;
+    backdrop-filter: blur(8px);
+    transition: background .25s, border-color .25s;
+  }
+  .social-btn:hover { background: var(--glass-b); border-color: var(--cyan); }
+
+  /* Contact form */
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: .4rem; }
+  .form-group label { font-size: .82rem; font-weight: 600; color: var(--muted); letter-spacing: .04em; }
+  .form-group input,
+  .form-group textarea {
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    color: var(--white); padding: .75rem 1rem; border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: .9rem;
+    outline: none; transition: border-color .25s, background .25s;
+    resize: vertical;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--cyan); background: rgba(0,212,255,.05);
+  }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder { color: rgba(136,153,187,.55); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .btn-submit {
+    background: var(--blue); color: #fff; border: none; cursor: pointer;
+    padding: .85rem 2rem; border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: .95rem; font-weight: 700;
+    transition: background .25s, transform .2s, box-shadow .25s;
+    box-shadow: 0 4px 20px rgba(45,111,255,.35);
+    align-self: flex-start;
+  }
+  .btn-submit:hover { background: var(--blue2); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(45,111,255,.5); }
+
+  /* ─── FOOTER ─────────────────────────────────────────── */
+  footer {
+    background: var(--navy2);
+    border-top: 1px solid var(--border);
+    padding: 2rem 6vw;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  footer p { font-size: .82rem; color: var(--muted); }
+  footer .footer-logo {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 1.05rem; color: var(--cyan);
+  }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    .about-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .hero-content { flex-direction: column-reverse; text-align: center; gap: 2.5rem; }
+    .hero-image { width: 180px; height: 180px; }
+    .hero-quote { margin: 0 auto 2.2rem; }
+    .hero-btns { justify-content: center; }
+  }
+  @media (max-width: 600px) {
+    section { padding: 70px 5vw; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .objective-card { padding: 2rem 1.5rem; }
+  }
+
+  /* form success */
+  .form-success {
+    background: rgba(0,212,255,.1); border: 1px solid rgba(0,212,255,.3);
+    color: var(--cyan); border-radius: 10px;
+    padding: .9rem 1.2rem; font-size: .9rem; font-weight: 600;
+    display: none; text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────────── -->
+<nav id="navbar">
+  <div class="nav-logo">AN.</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Hire Me</button>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu" style="
+  display:none; position:fixed; top:64px; left:0; right:0; z-index:99;
+  background:rgba(10,15,30,.97); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border); padding:1.5rem 6vw 2rem;
+  flex-direction:column; gap:1rem;
+">
+  <a href="#about"     onclick="closeMobileMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.5rem 0;border-bottom:1px solid var(--border)">About</a>
+  <a href="#education" onclick="closeMobileMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.5rem 0;border-bottom:1px solid var(--border)">Education</a>
+  <a href="#skills"    onclick="closeMobileMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.5rem 0;border-bottom:1px solid var(--border)">Skills</a>
+  <a href="#portfolio" onclick="closeMobileMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.5rem 0;border-bottom:1px solid var(--border)">Portfolio</a>
+  <a href="#contact"   onclick="closeMobileMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.5rem 0">Contact</a>
+</div>
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<section id="hero">
+  <canvas id="stars-canvas"></canvas>
+  <div class="horizon-glow"></div>
+
+  <!-- Running figure -->
+  <div class="runner-scene">
+    <div class="runner-ground"></div>
+    <div class="runner-figure">
+      <svg width="70" height="110" viewBox="0 0 70 110" xmlns="http://www.w3.org/2000/svg">
+        <!-- Head -->
+        <circle cx="38" cy="14" r="10" fill="rgba(0,212,255,0.85)"/>
+        <!-- Torso -->
+        <g class="torso">
+          <rect x="30" y="24" width="16" height="26" rx="5" fill="rgba(45,111,255,0.85)"/>
+          <!-- Arm back -->
+          <g class="arm-back">
+            <rect x="18" y="26" width="14" height="6" rx="3" fill="rgba(0,212,255,0.6)" transform="rotate(25 25 29)"/>
+          </g>
+          <!-- Arm front -->
+          <g class="arm-front">
+            <rect x="46" y="26" width="14" height="6" rx="3" fill="rgba(0,212,255,0.85)" transform="rotate(-25 53 29)"/>
+          </g>
+        </g>
+        <!-- Leg back -->
+        <g class="leg-back">
+          <rect x="30" y="48" width="10" height="28" rx="5" fill="rgba(45,111,255,0.6)" transform-origin="35 50"/>
+          <rect x="28" y="73" width="12" height="8" rx="3" fill="rgba(0,212,255,0.6)" transform-origin="35 73"/>
+        </g>
+        <!-- Leg front -->
+        <g class="leg-front">
+          <rect x="38" y="48" width="10" height="28" rx="5" fill="rgba(45,111,255,0.85)" transform-origin="43 50"/>
+          <rect x="36" y="73" width="12" height="8" rx="3" fill="rgba(0,212,255,0.85)" transform-origin="43 73"/>
+        </g>
+        <!-- Speed lines -->
+        <line x1="0" y1="30" x2="16" y2="30" stroke="rgba(0,212,255,0.3)" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <line x1="0" y1="38" x2="20" y2="38" stroke="rgba(0,212,255,0.2)" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="0" y1="46" x2="12" y2="46" stroke="rgba(0,212,255,0.15)" stroke-width="1" stroke-dasharray="3 3"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <!-- Profile image -->
+    <div class="hero-image">
+      <div class="profile-circle">
+        <div class="profile-initials">AN</div>
+        <div class="profile-sub">Photo Here</div>
+      </div>
+    </div>
+
+    <!-- Text -->
+    <div class="hero-text">
+      <div class="hero-badge">Available for Opportunities</div>
+      <h1 class="hero-name">Arnob Nath</h1>
+      <p class="hero-role">
+        <span>ECE Student</span> · EEE Major · <span>Graphic Designer</span> · <span>Data Specialist</span>
+      </p>
+      <p class="hero-quote">"Turning ideas into impactful designs and accurate data-driven solutions."</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download CV
+        </a>
+        <a href="#portfolio" class="btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          View Portfolio
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ─────────────────────────────────────────────── -->
+<section id="about">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">Who I Am</p>
+      <h2 class="section-title">About Me</h2>
+      <p class="section-lead">A passionate ECE student driven by technology, design, and data.</p>
+    </div>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <p>My name is <strong>Arnob Nath</strong>. I am currently pursuing my Bachelor's degree in the <strong>Department of Electrical and Computer Engineering (ECE)</strong> with a Major in <strong>Electrical and Electronic Engineering (EEE)</strong> at North South University.</p>
+        <p>I completed my <strong>SSC</strong> from Chittagong Engineering University School and College in 2022 and my <strong>HSC</strong> from Bakalia Government College in 2024.</p>
+        <p>I am passionate about technology, graphic design, data management, and continuous learning. I enjoy solving problems, creating visual identities, and working with data to deliver accurate and professional results.</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number">EEE</div>
+          <div class="stat-label">Major · ECE Dept.</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">NSU</div>
+          <div class="stat-label">North South University</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">2+</div>
+          <div class="stat-label">Years of design experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">2024</div>
+          <div class="stat-label">HSC Completion Year</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EDUCATION ─────────────────────────────────────────── -->
+<section id="education">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">Academic Journey</p>
+      <h2 class="section-title">Education</h2>
+      <p class="section-lead">Building a strong foundation through formal education and self-driven learning.</p>
+    </div>
+    <div class="edu-timeline reveal">
+      <div class="edu-item">
+        <div class="edu-degree">B.Sc. in Electrical &amp; Computer Engineering</div>
+        <div class="edu-school">North South University, Dhaka</div>
+        <div class="edu-detail">Department of Electrical and Computer Engineering (ECE) · Major: Electrical and Electronic Engineering (EEE)</div>
+        <span class="edu-year">Current Undergraduate</span>
+      </div>
+      <div class="edu-item">
+        <div class="edu-degree">Higher Secondary Certificate (HSC)</div>
+        <div class="edu-school">Bakalia Government College, Chattogram</div>
+        <div class="edu-detail">Science Group</div>
+        <span class="edu-year">2024</span>
+      </div>
+      <div class="edu-item">
+        <div class="edu-degree">Secondary School Certificate (SSC)</div>
+        <div class="edu-school">Chittagong Engineering University School and College</div>
+        <div class="edu-detail">Science Group</div>
+        <span class="edu-year">2022</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ────────────────────────────────────────────── -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">What I Do</p>
+      <h2 class="section-title">Skills &amp; Tools</h2>
+      <p class="section-lead">A versatile skill set spanning design, data, and productivity tools.</p>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-category">
+        <div class="skill-cat-title"><span class="icon">🎨</span> Graphic Design</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Adobe Illustrator</span>
+          <span class="skill-tag">Canva</span>
+          <span class="skill-tag">Photopea</span>
+          <span class="skill-tag">Logo Design</span>
+          <span class="skill-tag">Branding Design</span>
+          <span class="skill-tag">Typography</span>
+          <span class="skill-tag">Color Theory</span>
+          <span class="skill-tag">Visual Identity</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <div class="skill-cat-title"><span class="icon">📊</span> Data &amp; Office Tools</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Data Entry</span>
+          <span class="skill-tag">Data Research</span>
+          <span class="skill-tag">Data Analysis</span>
+          <span class="skill-tag">Data Formatting</span>
+          <span class="skill-tag">Microsoft Excel</span>
+          <span class="skill-tag">Microsoft Word</span>
+          <span class="skill-tag">Microsoft PowerPoint</span>
+          <span class="skill-tag">Spreadsheets</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PORTFOLIO ─────────────────────────────────────────── -->
+<section id="portfolio">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">My Work</p>
+      <h2 class="section-title">Portfolio</h2>
+      <p class="section-lead">A showcase of design, data, and presentation projects.</p>
+    </div>
+    <div class="portfolio-grid reveal">
+      <div class="port-card t1">
+        <div class="port-thumb"><span class="port-icon">🏷️</span></div>
+        <div class="port-body">
+          <div class="port-title">Logo Design Projects</div>
+          <div class="port-desc">Custom brand identities crafted with precision using Adobe Illustrator and Photopea, focusing on memorable mark-making and versatile vector graphics.</div>
+          <span class="port-tag">Adobe Illustrator · Branding</span>
+        </div>
+      </div>
+      <div class="port-card t2">
+        <div class="port-thumb"><span class="port-icon">✏️</span></div>
+        <div class="port-body">
+          <div class="port-title">Canva Design Projects</div>
+          <div class="port-desc">Social media graphics, promotional materials, and visual content created with Canva — combining layout skills and creative thinking.</div>
+          <span class="port-tag">Canva · Social Media</span>
+        </div>
+      </div>
+      <div class="port-card t3">
+        <div class="port-thumb"><span class="port-icon">⌨️</span></div>
+        <div class="port-body">
+          <div class="port-title">Data Entry Projects</div>
+          <div class="port-desc">Accurate and organized data entry tasks including database population, spreadsheet management, and structured record-keeping.</div>
+          <span class="port-tag">Excel · Accuracy</span>
+        </div>
+      </div>
+      <div class="port-card t4">
+        <div class="port-thumb"><span class="port-icon">📈</span></div>
+        <div class="port-body">
+          <div class="port-title">Data Analysis Reports</div>
+          <div class="port-desc">Structured reports summarizing research findings and data insights with clear visualizations and professional formatting.</div>
+          <span class="port-tag">Analysis · Reporting</span>
+        </div>
+      </div>
+      <div class="port-card t5">
+        <div class="port-thumb"><span class="port-icon">📊</span></div>
+        <div class="port-body">
+          <div class="port-title">Excel Dashboards</div>
+          <div class="port-desc">Dynamic Excel dashboards with charts, formulas, and conditional formatting to deliver actionable data summaries at a glance.</div>
+          <span class="port-tag">Microsoft Excel · Dashboards</span>
+        </div>
+      </div>
+      <div class="port-card t6">
+        <div class="port-thumb"><span class="port-icon">🖥️</span></div>
+        <div class="port-body">
+          <div class="port-title">Presentation Designs</div>
+          <div class="port-desc">Professional PowerPoint and Canva presentations that communicate ideas clearly with strong visual hierarchy and clean slide design.</div>
+          <span class="port-tag">PowerPoint · Canva</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CAREER OBJECTIVE ───────────────────────────────────── -->
+<section id="objective">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">Looking Ahead</p>
+      <h2 class="section-title">Career Objective</h2>
+    </div>
+    <div class="objective-card reveal">
+      <div class="obj-icon">🚀</div>
+      <p class="objective-text">Seeking opportunities to apply my skills in <strong style="color:var(--cyan)">graphic design</strong>, <strong style="color:var(--cyan)">data management</strong>, and <strong style="color:var(--cyan)">technology</strong> — while continuously learning and contributing to meaningful projects that make a real difference. Eager to bring precision, creativity, and dedication to every role, and to grow into a versatile professional at the intersection of engineering and design.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ─────────────────────────────────────────────── -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">Get In Touch</p>
+      <h2 class="section-title">Contact Me</h2>
+      <p class="section-lead">Open to freelance projects, internships, and collaborations.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <h3>Let's connect</h3>
+        <div class="contact-item">
+          <div class="contact-icon">✉️</div>
+          <div>Email · <a href="mailto:arnobnath5@gmail.com">arnobnath5@gmail.com</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🎓</div>
+          <div>North South University · Dhaka, Bangladesh</div>
+        </div>
+        <div class="social-row">
+          <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://facebook.com" target="_blank" rel="noopener" class="social-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>YOUR NAME</label>
+              <input type="text" placeholder="e.g. John Doe" id="cf-name"/>
+            </div>
+            <div class="form-group">
+              <label>EMAIL ADDRESS</label>
+              <input type="email" placeholder="hello@example.com" id="cf-email"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>SUBJECT</label>
+            <input type="text" placeholder="Project inquiry, Collaboration…" id="cf-subject"/>
+          </div>
+          <div class="form-group">
+            <label>MESSAGE</label>
+            <textarea rows="5" placeholder="Tell me about your project or opportunity…" id="cf-msg"></textarea>
+          </div>
+          <div class="form-success" id="formSuccess">✓ Message sent! I'll get back to you soon.</div>
+          <button class="btn-submit" onclick="handleFormSubmit()">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">Arnob Nath</div>
+  <p>© 2025 Arnob Nath · ECE Student · NSU · Designed with dedication.</p>
+</footer>
+
+<!-- ── SCRIPTS ─────────────────────────────────────────────── -->
+<script>
+/* ── Stars canvas ──────────────────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  function init() {
+    resize();
+    stars = [];
+    const n = Math.floor(canvas.width * canvas.height / 5000);
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + .2,
+        a: Math.random(),
+        speed: Math.random() * .004 + .002,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+      const alpha = s.a * (.4 + .6 * Math.sin(s.phase + t * s.speed));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,220,255,${alpha})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', init);
+  init();
+  requestAnimationFrame(draw);
+})();
+
+/* ── Scroll reveal ─────────────────────────────────────────── */
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => obs.observe(el));
+})();
+
+/* ── Mobile menu ───────────────────────────────────────────── */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  const open = mobileMenu.style.display === 'flex';
+  mobileMenu.style.display = open ? 'none' : 'flex';
+});
+function closeMobileMenu() { mobileMenu.style.display = 'none'; }
+
+/* ── Contact form (demo) ───────────────────────────────────── */
+function handleFormSubmit() {
+  const n = document.getElementById('cf-name').value.trim();
+  const e = document.getElementById('cf-email').value.trim();
+  const m = document.getElementById('cf-msg').value.trim();
+  if (!n || !e || !m) { alert('Please fill in name, email, and message.'); return; }
+  const s = document.getElementById('formSuccess');
+  s.style.display = 'block';
+  setTimeout(() => { s.style.display = 'none'; }, 5000);
+  ['cf-name','cf-email','cf-subject','cf-msg'].forEach(id => document.getElementById(id).value = '');
+}
+
+/* ── Smooth nav active state ────────────────────────────────── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks  = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === `#${cur}` ? 'var(--cyan)' : '';
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
